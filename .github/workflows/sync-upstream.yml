@@ -36,5 +36,16 @@ jobs:
       - name: Merge upstream/master
         run: git merge --no-edit upstream/master
 
+      - name: Guard zh-CN customizations
+        run: |
+          set -euo pipefail
+          grep -F 'export const DEFAULT_LOCALE = "zh-CN" as const;' ui/src/i18n/locales.ts
+          test -f ui/src/i18n/locales/zh-CN.json
+          grep -F 'expect(DEFAULT_LOCALE).toBe("zh-CN")' ui/src/i18n/locale-validation.test.ts
+          grep -F 'expect(resolveDefaultLocale()).toBe("zh-CN")' ui/src/i18n/default-locale.test.ts
+          grep -F 'Default to Simplified Chinese (zh-CN)' server/src/onboarding-assets/default/AGENTS.md
+          grep -F 'Default to Simplified Chinese (zh-CN)' server/src/onboarding-assets/ceo/AGENTS.md
+          grep -F 'Default to Simplified Chinese (zh-CN)' server/src/onboarding-assets/ceo/SOUL.md
+
       - name: Push zh-cn-main
         run: git push origin HEAD:zh-cn-main

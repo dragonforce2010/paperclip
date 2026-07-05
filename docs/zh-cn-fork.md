@@ -21,7 +21,7 @@
 
 `.github/workflows/sync-upstream.yml` 每周一 02:00 UTC 自动执行，也支持手动 `workflow_dispatch`。
 
-无冲突时流程会直接把 `upstream/master` merge 到 `zh-cn-main` 并 push 回 fork。若上游改动与中文化补丁冲突，workflow 会失败，手动处理：
+无冲突且中文护栏通过时，流程会把 `upstream/master` merge 到 `zh-cn-main` 并 push 回 fork。护栏会检查默认 locale 仍是 `zh-CN`、`zh-CN.json` 存在、默认 agent/CEO 模板仍要求简体中文。若上游改动导致这些检查失败，workflow 会停在 push 前，避免覆盖中文体验。手动处理：
 
 ```bash
 git fetch upstream master
