@@ -1,0 +1,40 @@
+name: Sync upstream into zh-cn-main
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * 1"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-upstream-zh-cn-main
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.repository == 'dragonforce2010/paperclip'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout zh-cn-main
+        uses: actions/checkout@v4
+        with:
+          ref: zh-cn-main
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch upstream
+        run: |
+          git remote add upstream https://github.com/paperclipai/paperclip.git
+          git fetch upstream master
+
+      - name: Merge upstream/master
+        run: git merge --no-edit upstream/master
+
+      - name: Push zh-cn-main
+        run: git push origin HEAD:zh-cn-main
